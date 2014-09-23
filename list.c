@@ -22,7 +22,7 @@ void _node_free(_node* n, void (*free_f)(void*)) {
     free(n);
 }
 
-void _unlink_node(_node* n) {
+void _node_unlink(_node* n) {
     if (n->prev != NULL) {
         n->prev->next = n->next;
     }
@@ -183,7 +183,7 @@ void* list_remove(list* l, int index) {
         if (n == l->tail) {
             l->tail = n->prev;
         }
-        _unlink_node(n);
+        _node_unlink(n);
         void* data = malloc(l->t_size);
         memcpy(data, n->data, l->t_size);
         _node_free(n, l->free_f);

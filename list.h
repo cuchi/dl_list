@@ -24,6 +24,7 @@ struct list {
 _node* _node_new(void* data, int t_size, _node* prev, _node* next);
 void _node_free(_node* n, void (*free_f)(void*));
 _node* _node_at(list* l, int index);
+void _node_unlink(_node* n);
 
 list* list_new(int t_size, void (*free_f)(void*), void* (*copy_f)(void*));
 void list_free(list* l);
