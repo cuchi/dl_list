@@ -11,6 +11,13 @@ struct _node {
     void* data;
 };
 
+typedef struct _iterator _iterator;
+struct _iterator {
+    _node* p;
+    int index;
+};
+
+
 typedef struct list list;
 struct list {
     _node* head;
@@ -19,12 +26,18 @@ struct list {
     int current_size;
     void* (*copy_f)(void*);
     void (*free_f)(void*);
+    _iterator* i;
 };
 
 _node* _node_new(void* data, int t_size, _node* prev, _node* next);
 void _node_free(_node* n, void (*free_f)(void*));
 _node* _node_at(list* l, int index);
 void _node_unlink(_node* n);
+
+void _iterator_reset(_iterator* i);
+_node* _iterator_mv_to(list* l, int index);
+_node* _iterator_mv_next(_iterator* i);
+_node* _iterator_mv_prev(_iterator* i);
 
 list* list_new(int t_size, void (*free_f)(void*), void* (*copy_f)(void*));
 void list_free(list* l);
@@ -35,6 +48,7 @@ void list_l_append(list* l, void* data);
 int list_insert(list* l, void* data, int index);
 void* list_r_pop(list* l);
 void* list_l_pop(list* l);
+void* list_remove(list* l, int index);
 void* list_get_copy(list* l, int index);
 void* list_get_ref(list* l, int index);
 void list_foreach(list* l, void (*func)(void*));
