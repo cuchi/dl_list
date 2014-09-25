@@ -274,3 +274,41 @@ void list_foreach(list* l, void (*func)(void*)) {
         n = n->next;
     }
 }
+
+void list_swap(list* l, int _a, int _b) {
+    _node* a = _node_at(l, _a);
+    _node* b = _node_at(l, _b);
+    if (a && b) {
+        void* aux = malloc(l->t_size);
+        memcpy(aux, a->data, l->t_size);
+        memcpy(a->data, b->data, l->t_size);
+        memcpy(b->data, aux, l->t_size);
+        free(aux);
+    }
+}
+
+void list_quicksort(list* l, int (*cmp_func)(void*, void*)) {
+    _list_quicksort(l, cmp_func, 0, l->current_size - 1);
+}
+
+void _list_quicksort(list* l, int (*cmp_func)(void*, void*), int begin, int end) {
+    int j;
+    if (begin < end) {
+        j = _list_quicksort_partition(l, cmp_func, begin, end);
+        _list_quicksort(l, cmp_func, begin, j - 1);
+        _list_quicksort(l, cmp_func, j + 1, end);
+    }
+}
+
+int _list_quicksort_partition(list* l, int (*cmp_func)(void*, void*), int begin, int end) {
+    int pivot, j;
+    pivot = begin;
+    for (j = begin + 1; j <= end; j++) {
+        if (cmp_func(list_get_ref(l, j), list_get_ref(l, begin)) < 0) {
+            pivot++;
+            list_swap(l, pivot, j);
+        }
+    }
+    list_swap(l, begin, pivot);
+    return pivot;
+}
