@@ -279,11 +279,10 @@ void list_swap(list* l, int _a, int _b) {
     _node* a = _node_at(l, _a);
     _node* b = _node_at(l, _b);
     if (a && b) {
-        void* aux = malloc(l->t_size);
-        memcpy(aux, a->data, l->t_size);
-        memcpy(a->data, b->data, l->t_size);
-        memcpy(b->data, aux, l->t_size);
-        free(aux);
+        void* aux;
+        aux = a->data;
+        a->data = b->data;
+        b->data = aux;
     }
 }
 
