@@ -286,6 +286,63 @@ void list_swap(list* l, int _a, int _b) {
     }
 }
 
+void list_mergesort(list* l, int (*cmp)(void*, void*)) {
+    _list_mergesort(l, 0, l->current_size - 1, cmp);
+}
+
+void _list_mergesort(list* l, int pos_a, int pos_b, int (*cmp)(void*, void*)) {
+    if (pos_b > pos_a) {
+        int m = (pos_b + pos_a + 1) / 2;
+        _list_mergesort(l, pos_a, m - 1, cmp);
+        _list_mergesort(l, m, pos_b, cmp);
+        _list_merge(l, pos_a, pos_b, cmp);
+    }
+}
+
+void _list_merge(list* l, int pos_a, int pos_b, int (*cmp)(void*, void*)) {
+    int mid = (pos_b + pos_a + 1) / 2;
+    _node* a = _node_at(l, pos_a);
+    _node* b = _node_at(l, mid);
+    if(_iterator_mv_to(l, pos_b + 1) == NULL) {
+        _iterator_reset(l->i);
+    }
+    int i = pos_a;
+    int j = mid;
+    if (pos_b - pos_a == 1) {
+        if (cmp(a->data, b->data) > 0) {
+            void* aux = a->data;
+            a->data = b->data;
+            b->data = aux;
+        }
+        return;
+    }
+    while (i < mid && j <= pos_b) {
+        if (cmp(a->data, b->data) > 0) {;
+            _node* aux = b;
+            b = b->next;
+            if (j == pos_b) {
+                if (b == NULL) {
+                    l->tail = aux->prev;
+                }
+            }
+            j++;
+            _node_unlink(aux);
+            aux->prev = a->prev;
+            aux->next = a;
+            a->prev = aux;
+            if (aux->prev != NULL) {
+                aux->prev->next = aux;
+            } else {
+                l->head = aux;
+            }
+        } else {
+            i++;
+            a = a->next;
+        }
+    }
+
+}
+
 void list_quicksort(list* l, int (*cmp_func)(void*, void*)) {
     _list_quicksort(l, cmp_func, 0, l->current_size - 1);
 }
@@ -302,8 +359,10 @@ void _list_quicksort(list* l, int (*cmp_func)(void*, void*), int begin, int end)
 int _list_quicksort_partition(list* l, int (*cmp_func)(void*, void*), int begin, int end) {
     int pivot, j;
     pivot = begin;
+    _iterator_mv_to(l, begin);
+    void* begin_ref = list_get_ref(l, begin);
     for (j = begin + 1; j <= end; j++) {
-        if (cmp_func(list_get_ref(l, j), list_get_ref(l, begin)) < 0) {
+        if (cmp_func(list_get_ref(l, j), begin_ref) < 0) {
             pivot++;
             list_swap(l, pivot, j);
         }

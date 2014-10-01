@@ -6,32 +6,25 @@ void print_integer(void* n) {
     printf("%d\n", *(int*) n);
 }
 
-void add_one(void* n) {
-    (*(int*) n)++;
-}
-
 int cmp_int(void* a, void* b) {
     return (*(int*) a) - (*(int*) b);
 }
 
 int main() {
-    srand(time(NULL));
-
-    // Creating our new list of integers:
     list* l = list_new(sizeof(int), NULL, NULL);
-
-    // Let's add some stuff in it.
-    int i, j, k;
-    // Playing with randomness:
-    for (i = 1; i <= 50; i++) {
-        j = rand() % i;
-        k = rand() % 500;
-        printf("Inserting %d in [%d].\n", k, j);
-        list_insert(l, &k, j);
+    int i, j;
+    int t = 1000000;
+    for (i = 0; i < t; i++) {
+        j = rand();
+        list_l_append(l, &j);
     }
-
-    printf("Playing with the quicksort:\n");
-    list_quicksort(l, cmp_int);
-    list_foreach(l, print_integer);
+    printf("Sorting 1 million integers (MergeSort)...\n");
+    struct timeval t0, t1;
+    gettimeofday(&t0, 0);
+    list_mergesort(l, cmp_int);
+    gettimeofday(&t1, 0);
+    printf("Done!\n");
+    double time = (t1.tv_sec - t0.tv_sec) + 0.000001 * (t1.tv_usec - t0.tv_usec);
+    printf("Time: %lf.\n", time);
     return 0;
 }
