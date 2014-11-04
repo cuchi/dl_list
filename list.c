@@ -343,30 +343,32 @@ void _list_merge(list* l, int pos_a, int pos_b, int (*cmp)(void*, void*)) {
 
 }
 
-void list_quicksort(list* l, int (*cmp_func)(void*, void*)) {
-    _list_quicksort(l, cmp_func, 0, l->current_size - 1);
-}
-
-void _list_quicksort(list* l, int (*cmp_func)(void*, void*), int begin, int end) {
-    int j;
-    if (begin < end) {
-        j = _list_quicksort_partition(l, cmp_func, begin, end);
-        _list_quicksort(l, cmp_func, begin, j - 1);
-        _list_quicksort(l, cmp_func, j + 1, end);
+list* list_filter(list* l, int (*filter_f)(void*)) {
+    list* nl = list_new(l->t_size, l->free_f, l->copy_f);
+    _node* p = l->head;
+    while (p != NULL) {
+        if (filter_f(p->data)) {
+            list_r_append(nl, p->data);
+        }
+        p = p->next;
     }
+    return nl;
 }
 
-int _list_quicksort_partition(list* l, int (*cmp_func)(void*, void*), int begin, int end) {
-    int pivot, j;
-    pivot = begin;
-    _iterator_mv_to(l, begin);
-    void* begin_ref = list_get_ref(l, begin);
-    for (j = begin + 1; j <= end; j++) {
-        if (cmp_func(list_get_ref(l, j), begin_ref) < 0) {
-            pivot++;
-            list_swap(l, pivot, j);
+int list_linear_search(list* l, void* data, int (*cmp)(void*, void*)) {
+    if (list_is_empty(l)) {
+        return -1;
+    } else {
+        _node* p = l->head;
+        int i = 0;
+        while (p != NULL && cmp(data, p->data) != 0) {
+            p = p->next;
+            i++;
+        }
+        if (p == NULL) {
+            return -1
+        } else {
+            return i;
         }
     }
-    list_swap(l, begin, pivot);
-    return pivot;
 }

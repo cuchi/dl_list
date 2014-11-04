@@ -55,8 +55,7 @@ void list_foreach(list* l, void (*func)(void*));
 void list_mergesort(list* l, int (*cmp)(void*, void*));
 void _list_mergesort(list* l, int pos_a, int pos_b, int (*cmp)(void*, void*));
 void _list_merge(list* l, int pos_a, int pos_b, int (*cmp)(void*, void*));
-void list_quicksort(list* l, int (*cmp_func)(void*, void*));
-void _list_quicksort(list* l, int (*cmp_func)(void*, void*), int begin, int end);
-int _list_quicksort_partition(list* l, int (*cmp_func)(void*, void*), int begin, int end);
+list* list_filter(list* l, int (*filter_f)(void*));
+int list_linear_search(list* l, void* data, int (*cmp)(void*, void*));
 
 #endif // LIST_H
