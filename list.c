@@ -366,7 +366,7 @@ int list_linear_search(list* l, void* data, int (*cmp)(void*, void*)) {
             i++;
         }
         if (p == NULL) {
-            return -1
+            return -1;
         } else {
             return i;
         }
